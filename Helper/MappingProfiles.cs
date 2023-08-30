@@ -12,6 +12,12 @@ namespace Teams.Helper
         public MappingProfiles()
         {
             CreateMap<User, UserDTO>();
+            CreateMap<UserDTO, User>();
+            CreateMap<Group, GroupDTO>();
+            CreateMap<GroupDTO, Group>();
+            CreateMap<Target, TargetDTO>();
+            CreateMap<TargetDTO, Target>();
+            CreateMap<ExecutorDTO, Executor>();
         }
     }
 }

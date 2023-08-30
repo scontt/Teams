@@ -7,26 +7,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Teams.Migrations
 {
     /// <inheritdoc />
-    public partial class first_migrate : Migration
+    public partial class InitialMigrate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Groups",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("Group_Id", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -45,49 +30,22 @@ namespace Teams.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Targets",
+                name: "Groups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Deadline = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    Groupid = table.Column<int>(type: "integer", nullable: false),
-                    Report = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: true)
+                    OwnerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("Target_Id", x => x.Id);
+                    table.PrimaryKey("Group_Id", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Targets_Groups_Groupid",
-                        column: x => x.Groupid,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Leaders",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    GroupId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Leaders", x => new { x.UserId, x.GroupId });
-                    table.ForeignKey(
-                        name: "FK_Leaders_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Leaders_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Groups_Users_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -113,6 +71,31 @@ namespace Teams.Migrations
                         name: "FK_Members_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Targets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Deadline = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    Groupid = table.Column<int>(type: "integer", nullable: false),
+                    Report = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Target_Id", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Targets_Groups_Groupid",
+                        column: x => x.Groupid,
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -147,9 +130,9 @@ namespace Teams.Migrations
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Leaders_GroupId",
-                table: "Leaders",
-                column: "GroupId");
+                name: "IX_Groups_OwnerId",
+                table: "Groups",
+                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_GroupId",
@@ -169,19 +152,16 @@ namespace Teams.Migrations
                 name: "Executors");
 
             migrationBuilder.DropTable(
-                name: "Leaders");
-
-            migrationBuilder.DropTable(
                 name: "Members");
 
             migrationBuilder.DropTable(
                 name: "Targets");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "Users");
         }
     }
 }

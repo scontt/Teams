@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Teams.Data;
+using Teams.DTO;
 using Teams.Interfaces;
 
 namespace Teams.Repository
@@ -12,29 +14,53 @@ namespace Teams.Repository
             _context = context;
         }
 
-        public async Task<ICollection<Group>> GetAllGroups()
+        public ICollection<Group> GetAllGroups()
         {
             return _context.Groups.OrderBy(g => g.Id).ToList();
         }
 
-        public async Task<Group> GetGroup(int groupId)
+        public Group GetGroup(int groupId)
         {
             return _context.Groups.Where(g => g.Id == groupId).FirstOrDefault();
         }
 
-        public async Task<Member> GetMember(int groupId)
+        public Member GetMember(int groupId)
         {
             return _context.Members.Where(m => m.GroupId == groupId).FirstOrDefault();
         }
 
-        public async Task<ICollection<Member>> GetMembers(int groupId)
+        public ICollection<Member> GetMembers(int groupId)
         {
             return _context.Members.OrderBy(m => m.UserId).Where(m => m.GroupId == groupId).ToList();
         }
 
-        public async Task<bool> IsGroupExists(int groupId)
+        public bool CreateGroup(Group group)
+        {
+            _context.Add(group);
+            return Save();
+        }
+
+        public bool IsGroupExists(int groupId)
         {
             return _context.Groups.Any(g => g.Id == groupId);
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public bool UpdateGroup(Group group)
+        {
+            _context.Update(group);
+            return Save();
+        }
+
+        public bool AddNewMember(Member newMember)
+        {
+            _context.Add(newMember);
+            return Save();
         }
     }
 }

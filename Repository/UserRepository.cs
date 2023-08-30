@@ -12,29 +12,29 @@ namespace Teams.Repository
             _context = context;
         }
 
-        public async Task<bool> CreateUser(User newUser)
+        public bool CreateUser(User newUser)
         {
             _context.Add(newUser);
 
-            return await Save();
+            return Save();
         }
 
-        public async Task<ICollection<User>> GetAllUsers()
+        public ICollection<User> GetAllUsers()
         {
             return _context.Users.OrderBy(u => u.Id).ToList();
         }
 
-        public async Task<User> GetUserById(int userId)
+        public User GetUserById(int userId)
         {
             return _context.Users.Where(u => u.Id == userId).FirstOrDefault();
         }
 
-        public async Task<User> GetUserByUsername(string username)
+        public User GetUserByUsername(string username)
         {
             return _context.Users.Where(u => u.Username == username).FirstOrDefault();
         }
 
-        public async Task<bool> Save()
+        public bool Save()
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;

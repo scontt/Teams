@@ -55,25 +55,15 @@ namespace Teams.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id")
                         .HasName("Group_Id");
 
+                    b.HasIndex("OwnerId");
+
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("Teams.Models.Leader", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("UserId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Leaders");
                 });
 
             modelBuilder.Entity("Teams.Models.Member", b =>
@@ -180,23 +170,15 @@ namespace Teams.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Teams.Models.Leader", b =>
+            modelBuilder.Entity("Teams.Models.Group", b =>
                 {
-                    b.HasOne("Teams.Models.Group", "Group")
-                        .WithMany("Leaders")
-                        .HasForeignKey("GroupId")
+                    b.HasOne("Teams.Models.User", "Owner")
+                        .WithMany("OwnsGroups")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Teams.Models.User", "User")
-                        .WithMany("Leaders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Teams.Models.Member", b =>
@@ -231,8 +213,6 @@ namespace Teams.Migrations
 
             modelBuilder.Entity("Teams.Models.Group", b =>
                 {
-                    b.Navigation("Leaders");
-
                     b.Navigation("Members");
 
                     b.Navigation("Targets");
@@ -247,9 +227,9 @@ namespace Teams.Migrations
                 {
                     b.Navigation("Executors");
 
-                    b.Navigation("Leaders");
-
                     b.Navigation("Members");
+
+                    b.Navigation("OwnsGroups");
                 });
 #pragma warning restore 612, 618
         }

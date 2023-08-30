@@ -7,10 +7,10 @@ namespace Teams.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetUserById(int userId);
-        Task<User> GetUserByUsername(string username);
-        Task<ICollection<User>> GetAllUsers();
-        Task<bool> CreateUser(User newUser);
-        Task<bool> Save();
+        User GetUserById(int userId);
+        User GetUserByUsername(string username);
+        ICollection<User> GetAllUsers();
+        bool CreateUser(User newUser);
+        bool Save();
     }
 }

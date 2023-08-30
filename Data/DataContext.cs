@@ -6,13 +6,12 @@ namespace Teams.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-
+            
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Target> Targets { get; set; }
-        public DbSet<Leader> Leaders { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Executor> Executors { get; set; }
 
@@ -23,6 +22,10 @@ namespace Teams.Data
 
             modelBuilder.Entity<Group>()
             .HasKey(g => g.Id).HasName("Group_Id");
+            modelBuilder.Entity<Group>()
+            .HasOne(g => g.Owner)
+            .WithMany(u => u.OwnsGroups)
+            .HasForeignKey(g => g.OwnerId);
 
             modelBuilder.Entity<Target>()
             .HasKey(t => t.Id).HasName("Target_Id");
@@ -30,17 +33,6 @@ namespace Teams.Data
             .HasOne(t => t.Group)
             .WithMany(t => t.Targets)
             .HasForeignKey(t => t.Groupid);
-
-            modelBuilder.Entity<Leader>()
-            .HasKey(l => new { l.UserId, l.GroupId });
-            modelBuilder.Entity<Leader>()
-            .HasOne(l => l.User)
-            .WithMany(l => l.Leaders)
-            .HasForeignKey(l => l.UserId);
-            modelBuilder.Entity<Leader>()
-            .HasOne(l => l.Group)
-            .WithMany(l => l.Leaders)
-            .HasForeignKey(l => l.GroupId);
 
             modelBuilder.Entity<Member>()
             .HasKey(m => new { m.UserId, m.GroupId });

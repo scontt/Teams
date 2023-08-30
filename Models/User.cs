@@ -9,7 +9,7 @@ namespace Teams.Models
         public string Password { get; set; } = null!;
         public int? Donetasks { get; set; }
         public virtual ICollection<Member> Members { get; set; }
-        public virtual ICollection<Leader> Leaders { get; set; }
         public virtual ICollection<Executor> Executors { get; set; }
+        public virtual ICollection<Group> OwnsGroups { get; set; }
     }
 }
