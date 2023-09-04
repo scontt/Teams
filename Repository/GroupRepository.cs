@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Teams.Data;
 using Teams.DTO;
 using Teams.Interfaces;
@@ -21,7 +22,7 @@ namespace Teams.Repository
 
         public Group GetGroup(int groupId)
         {
-            return _context.Groups.Where(g => g.Id == groupId).FirstOrDefault();
+            return _context.Groups.Where(g => g.Id == groupId).AsNoTracking().FirstOrDefault();
         }
 
         public Member GetMember(int groupId)

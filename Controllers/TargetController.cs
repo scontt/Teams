@@ -6,6 +6,7 @@ using Teams.Interfaces;
 
 namespace Teams.Controllers
 {
+    [Route("api/[controller]")]
     public class TargetController : ControllerBase
     {
         private readonly ITargetRepository _targetRepository;
@@ -17,7 +18,7 @@ namespace Teams.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("NewTarget")]
+        [HttpPost("newTarget")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateTarget([FromBody]TargetDTO target, List<int> executorsId)
@@ -41,7 +42,7 @@ namespace Teams.Controllers
             return Ok("Задание успешно создано");
         }
 
-        [HttpGet("AllTargets")]
+        [HttpGet("allTargets")]
         [ProducesResponseType(200, Type = typeof(Target))]
         [ProducesResponseType(400)]
         public async Task<ActionResult<Target>> GetTargets()
@@ -67,7 +68,7 @@ namespace Teams.Controllers
             return Ok(target);
         }
 
-        [HttpPost("{newExecutor}")]
+        [HttpPost("newExecutor")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddNewExecutor([FromQuery]int executorId, [FromQuery]int targetId)
@@ -88,5 +89,63 @@ namespace Teams.Controllers
 
             return Ok("Исполнители успешно добавлены");
         }
+
+        [HttpDelete("deleteExecutor")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteExecutor([FromQuery]int userId, [FromQuery]int targetId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            ExecutorDTO executor = new ExecutorDTO()
+            {
+                UserId = userId,
+                TargetId = targetId
+            };
+
+            var executorMap = _mapper.Map<Executor>(executor);
+            
+            if (!_targetRepository.DeleteExecutor(executorMap))
+            {
+                ModelState.AddModelError("", "Ой, что-то пошло не так :/");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+
+        [HttpPut("{targetId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateTarget(int targetId, [FromBody]TargetDTO updatedTarget)
+        {
+            if (updatedTarget == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var target = _targetRepository.GetTarget(targetId);
+
+            var targetMap = _mapper.Map<Target>(updatedTarget);
+
+            targetMap.Id = targetId;
+            targetMap.Created = target.Created;
+            targetMap.Groupid = target.Groupid;
+
+            if (!_targetRepository.UpdateTarget(targetMap))
+            {
+                ModelState.AddModelError("", "Ой, что-то пошло не так :/");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+            
+        }
+
     }
 }

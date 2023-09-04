@@ -4,10 +4,11 @@ namespace Teams.Interfaces
     {
         Target GetTarget(int targetId);
         ICollection<Target> GetTargets();
-        bool CreateTarget(Target targetCreate);
-        bool UpdateTarget(Target targetUpdate);
+        bool CreateTarget(Target target);
+        bool UpdateTarget(Target target);
         bool addNewExecutor(Executor executorAdd);
         int GetLastTarget();
+        bool DeleteExecutor(Executor executor);
         bool Save();
     }
 }

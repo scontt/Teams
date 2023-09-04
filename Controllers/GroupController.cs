@@ -17,7 +17,7 @@ namespace Teams.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{groupId}")]
+        [HttpGet("{groupId}")] 
         public async Task<ActionResult<Group>> GetGroup(int groupId)
         {
             var group = _mapper.Map<GroupDTO>(_groupRepository.GetGroup(groupId));
@@ -56,7 +56,7 @@ namespace Teams.Controllers
             if (updatedGroup == null)
                 return BadRequest(ModelState);
 
-            if (groupId != updatedGroup.Id)
+            if (groupId != groupId)
                 return BadRequest(ModelState);
 
             if (!_groupRepository.IsGroupExists(groupId))
@@ -65,7 +65,14 @@ namespace Teams.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
+            var group = _groupRepository.GetGroup(groupId);
+
+            var created = group.Created;
+
             var groupMap = _mapper.Map<Group>(updatedGroup);
+
+            groupMap.Created = created;
+            groupMap.Id = groupId;
 
             if (!_groupRepository.UpdateGroup(groupMap))
             {

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Teams.Data;
 using Teams.Interfaces;
 
@@ -26,7 +27,7 @@ namespace Teams.Repository
 
         public Target GetTarget(int targetId)
         {
-            return _context.Targets.Where(t => t.Id == targetId).FirstOrDefault();
+            return _context.Targets.Where(t => t.Id == targetId).AsNoTracking().FirstOrDefault();
         }
 
         public ICollection<Target> GetTargets()
@@ -40,9 +41,10 @@ namespace Teams.Repository
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateTarget(Target targetUpdate)
+        public bool UpdateTarget(Target target)
         {
-            throw new NotImplementedException();
+            _context.Update(target);
+            return Save();
         }
 
         public int GetLastTarget()
@@ -50,6 +52,10 @@ namespace Teams.Repository
             return _context.Targets.Max(t => t.Id);
         }
 
-        
+        public bool DeleteExecutor(Executor executor)
+        {
+            _context.Remove(executor);
+            return Save();
+        }
     }
 }
