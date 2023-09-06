@@ -63,5 +63,11 @@ namespace Teams.Repository
             _context.Add(newMember);
             return Save();
         }
+
+        public bool DeleteMember(Member memberDelete)
+        {
+            _context.Remove(memberDelete);
+            return Save();
+        }
     }
 }

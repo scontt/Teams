@@ -61,5 +61,25 @@ namespace Teams.Controllers
 
             return Ok("Пользователь успешно создан");
         }
+
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> UpdateUser([FromQuery] int userId, [FromBody] UserDTO userUpdate)
+        {
+            if (userUpdate == null)
+                return BadRequest(ModelState);
+
+            var userMap = _mapper.Map<User>(userUpdate);
+            userMap.Id = userId;
+            
+            if (!_userRepository.UpdateUser(userMap))
+            {
+                ModelState.AddModelError("", "Ой, что-то пошло не так :/");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

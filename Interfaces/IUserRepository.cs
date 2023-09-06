@@ -11,6 +11,7 @@ namespace Teams.Interfaces
         User GetUserByUsername(string username);
         ICollection<User> GetAllUsers();
         bool CreateUser(User newUser);
+        bool UpdateUser(User userUpdate);
         bool Save();
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teams.Interfaces;
 using AutoMapper;
 using Teams.DTO;
+using System.Xml.Serialization;
 
 namespace Teams.Controllers
 {
@@ -51,12 +52,9 @@ namespace Teams.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateGroup(int groupId, [FromBody] GroupDTO updatedGroup)
+        public async Task<IActionResult> UpdateGroup([FromQuery] int groupId, [FromBody] GroupDTO updatedGroup)
         {
             if (updatedGroup == null)
-                return BadRequest(ModelState);
-
-            if (groupId != groupId)
                 return BadRequest(ModelState);
 
             if (!_groupRepository.IsGroupExists(groupId))
@@ -83,7 +81,7 @@ namespace Teams.Controllers
             return NoContent();
         }
 
-        [HttpPost("{newMember}")]
+        [HttpPost("newMember")]
         public async Task<IActionResult> AddNewMember([FromQuery]int groupId, [FromQuery]int userId)
         {
             var newMember = new Member()
@@ -99,6 +97,25 @@ namespace Teams.Controllers
             }
 
             return Ok(newMember);
+        }
+
+        [HttpDelete("deleteMember")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteMember([FromBody] MemberDTO memberToDelete)
+        {
+            if (memberToDelete == null)
+                return BadRequest(ModelState);
+
+            var memberMap = _mapper.Map<Member>(memberToDelete);
+
+            if (!_groupRepository.DeleteMember(memberMap))
+            {
+                ModelState.AddModelError("", "Ой, что-то пошло не так :/");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent(); 
         }
     }
 }

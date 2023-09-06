@@ -34,7 +34,7 @@ namespace Teams.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("Executors");
+                    b.ToTable("Executors", (string)null);
                 });
 
             modelBuilder.Entity("Teams.Models.Group", b =>
@@ -63,7 +63,7 @@ namespace Teams.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Teams.Models.Member", b =>
@@ -78,7 +78,7 @@ namespace Teams.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("Teams.Models.Target", b =>
@@ -117,7 +117,7 @@ namespace Teams.Migrations
 
                     b.HasIndex("Groupid");
 
-                    b.ToTable("Targets");
+                    b.ToTable("Targets", (string)null);
                 });
 
             modelBuilder.Entity("Teams.Models.User", b =>
@@ -148,7 +148,7 @@ namespace Teams.Migrations
                     b.HasKey("Id")
                         .HasName("User_Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Teams.Models.Executor", b =>

@@ -15,6 +15,7 @@ namespace Teams.Interfaces
         bool UpdateGroup(Group updatedGroup);
         bool AddNewMember(Member newMember);
         bool IsGroupExists(int groupId);
+        bool DeleteMember(Member memberDelete);
         bool Save();
     }
 }

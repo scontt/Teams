@@ -39,5 +39,11 @@ namespace Teams.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public bool UpdateUser(User userUpdate)
+        {
+            _context.Update(userUpdate);
+            return Save();
+        }
     }
 }
