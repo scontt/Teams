@@ -12,6 +12,10 @@ namespace Teams.Interfaces
         ICollection<User> GetAllUsers();
         bool CreateUser(User newUser);
         bool UpdateUser(User userUpdate);
+        User LogIn(User user);
+        User SignIn(User user);
+        string HashPassword(string password);
+        bool VerifyHashedPassword(string hashedPassword, string providedPassword);
         bool Save();
     }
 }

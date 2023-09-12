@@ -51,6 +51,8 @@ namespace Teams.Controllers
             if (userCreate == null)
                 return BadRequest(ModelState);
 
+            userCreate.Password = _userRepository.HashPassword(userCreate.Password);
+
             var userMap = _mapper.Map<User>(userCreate);
 
             if (!_userRepository.CreateUser(userMap))

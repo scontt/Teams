@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Teams.Interfaces;
 using AutoMapper;
 using Teams.DTO;
-using System.Xml.Serialization;
 
 namespace Teams.Controllers
 {
