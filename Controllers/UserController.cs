@@ -1,3 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Teams.DTO;
@@ -20,7 +23,7 @@ namespace Teams.Controllers
         [HttpGet("{userId:int}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<User>> GetUser(int userId)
+        public async Task<ActionResult<User>> GetUser([FromQuery]int userId)
         {
             var user = _mapper.Map<UserDTO>(_userRepository.GetUserById(userId));
 
@@ -82,6 +85,34 @@ namespace Teams.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("/login")]
+        [ProducesResponseType(401)]
+        public async Task<IResult> Login([FromBody] UserLogin userLogin)
+        {
+            var user = _userRepository.GetUserByUsername(userLogin.Username);
+            if (!_userRepository.VerifyHashedPassword(user.Password, userLogin.Password))
+                return Results.Unauthorized();
+
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.Username) };
+            var jwt = new JwtSecurityToken(
+                issuer: AuthOptions.ISSUER,
+                audience: AuthOptions.AUDIENCE,
+                claims: claims,
+                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(30)),
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
+            );
+            
+            var ecnodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new 
+            {
+                access_token = ecnodedJwt,
+                username = userLogin.Username
+            };
+
+            return Results.Json(response);
         }
     }
 }
