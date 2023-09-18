@@ -33,7 +33,7 @@ namespace Teams.Controllers
             return Ok(user);
         }
 
-        [HttpGet]
+        [HttpGet("allUsers")]
         [ProducesResponseType(200, Type = typeof(ICollection<User>))]
         [ProducesResponseType(400)]
         public async Task<ActionResult<ICollection<User>>> GetAllUsers()
@@ -46,7 +46,7 @@ namespace Teams.Controllers
             return Ok(users);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO userCreate)
@@ -87,7 +87,7 @@ namespace Teams.Controllers
             return NoContent();
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         [ProducesResponseType(401)]
         public async Task<IResult> Login([FromBody] UserLogin userLogin)
         {
