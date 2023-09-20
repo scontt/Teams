@@ -5,9 +5,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Teams.DTO;
 using Teams.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Teams.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
@@ -46,6 +48,7 @@ namespace Teams.Controllers
             return Ok(users);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -87,6 +90,7 @@ namespace Teams.Controllers
             return NoContent();
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(401)]
         public async Task<IResult> Login([FromBody] UserLogin userLogin)
