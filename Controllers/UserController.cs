@@ -63,7 +63,7 @@ namespace Teams.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("auth/signup")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO userCreate)
@@ -105,7 +105,7 @@ namespace Teams.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("auth/signin")]
         [ProducesResponseType(401)]
         public async Task<IResult> Login([FromBody] UserLogin userLogin)
         {
