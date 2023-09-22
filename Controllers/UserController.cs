@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teams.DTO;
 using Teams.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Teams.Controllers
 {
@@ -22,7 +23,7 @@ namespace Teams.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{userId:int}")]
+        [HttpGet("getbyid/{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
         public async Task<ActionResult<User>> GetUser([FromQuery]int userId)
@@ -33,6 +34,19 @@ namespace Teams.Controllers
                 return BadRequest(ModelState);
 
             return Ok(user);
+        }
+
+        [HttpGet("getbyname")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public async Task<IResult> GetByUsernameUser([FromQuery]string username)
+        {
+            var user = _mapper.Map<UserDTO>(_userRepository.GetUserByUsername(username));
+
+            if (!ModelState.IsValid)
+                return Results.BadRequest(ModelState);
+                
+            return Results.Json(user);
         }
 
         [HttpGet("allUsers")]
@@ -49,7 +63,7 @@ namespace Teams.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("auth/signup")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO userCreate)
@@ -91,7 +105,7 @@ namespace Teams.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("auth/signin")]
         [ProducesResponseType(401)]
         public async Task<IResult> Login([FromBody] UserLogin userLogin)
         {

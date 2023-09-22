@@ -18,6 +18,20 @@ namespace Teams.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("allGroups")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        public async Task<ActionResult> GetAllGroups()
+        {
+            var groups = _mapper.Map<ICollection<GroupDTO>>(_groupRepository.GetAllGroups());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(groups);
+        }
+
         [HttpGet("{groupId}")] 
         public async Task<ActionResult<Group>> GetGroup(int groupId)
         {
