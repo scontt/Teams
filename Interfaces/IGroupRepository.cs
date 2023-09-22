@@ -17,5 +17,6 @@ namespace Teams.Interfaces
         bool IsGroupExists(int groupId);
         bool DeleteMember(Member memberDelete);
         bool Save();
+        ICollection<Group> GetUsersGroups(int id);
     }
 }

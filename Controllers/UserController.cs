@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Teams.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {

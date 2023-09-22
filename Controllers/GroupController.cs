@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teams.Interfaces;
 using AutoMapper;
 using Teams.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Teams.Controllers
 {
@@ -26,6 +27,17 @@ namespace Teams.Controllers
                 return BadRequest(ModelState);
 
             return Ok(group);
+        }
+
+        [HttpGet("getallgroups")]
+        public async Task<IActionResult> GetAllGroups()
+        {
+            var groups = _mapper.Map<ICollection<GroupDTO>>(_groupRepository.GetAllGroups());
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(groups);
         }
 
         [HttpPost]
@@ -115,6 +127,16 @@ namespace Teams.Controllers
             }
 
             return NoContent(); 
+        }
+
+        [AllowAnonymous]
+        [HttpGet("usergroups")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        public async Task<IResult> GetUsersGroups(int userId)
+        {
+            var groups = _mapper.Map<ICollection<GroupDTO>>(_groupRepository.GetUsersGroups(userId));
+            return Results.Json(groups);
         }
     }
 }

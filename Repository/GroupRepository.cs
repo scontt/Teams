@@ -69,5 +69,10 @@ namespace Teams.Repository
             _context.Remove(memberDelete);
             return Save();
         }
+
+        public ICollection<Group> GetUsersGroups(int userId)
+        {
+            return _context.Groups.Where(g => g.OwnerId == userId).ToList();
+        }
     }
 }
