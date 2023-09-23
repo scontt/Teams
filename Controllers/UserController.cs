@@ -110,6 +110,10 @@ namespace Teams.Controllers
         public async Task<IResult> Login([FromBody] UserLogin userLogin)
         {
             var user = _userRepository.GetUserByUsername(userLogin.Username);
+
+            if (user == null)
+                return Results.Conflict();
+
             if (!_userRepository.VerifyHashedPassword(user.Password, userLogin.Password))
                 return Results.Unauthorized();
 

@@ -18,7 +18,7 @@ namespace Teams.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("allGroups")]
+        [HttpGet("getallgroups")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
@@ -43,24 +43,14 @@ namespace Teams.Controllers
             return Ok(group);
         }
 
-        [HttpGet("getallgroups")]
-        public async Task<IActionResult> GetAllGroups()
-        {
-            var groups = _mapper.Map<ICollection<GroupDTO>>(_groupRepository.GetAllGroups());
-
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(groups);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<Group>> CreateGroup([FromBody]GroupDTO groupCreate, int userId)
+        [HttpPost("create")]
+        public async Task<ActionResult<Group>> CreateGroup([FromBody]GroupDTO groupCreate)
         {
             if (groupCreate == null)
-                return BadRequest(ModelState);
+                return BadRequest(groupCreate);
 
             var groupMap = _mapper.Map<Group>(groupCreate);
+            int userId = groupMap.OwnerId;
 
             if (!_groupRepository.CreateGroup(groupMap))
             {
