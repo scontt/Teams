@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Teams.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class GroupController : ControllerBase
     {
