@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teams.DTO;
 using Teams.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Teams.Controllers
@@ -39,7 +40,7 @@ namespace Teams.Controllers
         [HttpGet("getbyname")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
-        public async Task<IResult> GetByUsernameUser([FromQuery]string username)
+        public async Task<IResult> GetUserByUsername([FromQuery]string username)
         {
             var user = _mapper.Map<UserDTO>(_userRepository.GetUserByUsername(username));
 
@@ -109,15 +110,15 @@ namespace Teams.Controllers
         [ProducesResponseType(401)]
         public async Task<IResult> Login([FromBody] UserLogin userLogin)
         {
-            var user = _userRepository.GetUserByUsername(userLogin.Username);
+            var _user = _mapper.Map<UserDTO>(_userRepository.GetUserByUsername(userLogin.Username));
 
-            if (user == null)
+            if (_user == null)
                 return Results.Conflict();
 
-            if (!_userRepository.VerifyHashedPassword(user.Password, userLogin.Password))
+            if (!_userRepository.VerifyHashedPassword(_user.Password, userLogin.Password))
                 return Results.Unauthorized();
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.Username) };
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, _user.Username) };
             var jwt = new JwtSecurityToken(
                 issuer: AuthOptions.ISSUER,
                 audience: AuthOptions.AUDIENCE,
@@ -128,10 +129,12 @@ namespace Teams.Controllers
             
             var ecnodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
+            var userJson = JsonConvert.SerializeObject(_user);
+
             var response = new 
             {
                 access_token = ecnodedJwt,
-                username = userLogin.Username
+                user = userJson
             };
 
             return Results.Json(response);
