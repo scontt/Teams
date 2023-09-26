@@ -8,7 +8,7 @@ namespace Teams.Interfaces
     public interface IGroupRepository
     {
         ICollection<Group> GetAllGroups();
-        Group GetGroup(int groupId);
+        Task<Group> GetGroup(int groupId);
         ICollection<Member> GetMembers(int groupId);
         Member GetMember(int groupId);
         bool CreateGroup(Group group);
@@ -18,5 +18,6 @@ namespace Teams.Interfaces
         bool DeleteMember(Member memberDelete);
         bool Save();
         ICollection<Group> GetUsersGroups(int id);
+        Task<bool> DeleteGroup(int groupId);
     }
 }

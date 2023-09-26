@@ -22,7 +22,7 @@ namespace Teams.Repository
             return _context.Groups.OrderBy(g => g.Id).ToList();
         }
 
-        public Group GetGroup(int groupId)
+        public async Task<Group> GetGroup(int groupId)
         {
             return _context.Groups.Where(g => g.Id == groupId).AsNoTracking().FirstOrDefault();
         }
@@ -74,7 +74,14 @@ namespace Teams.Repository
 
         public ICollection<Group> GetUsersGroups(int userId)
         {
-            return _context.Groups.Where(g => g.OwnerId == userId).ToList();
+            return _context.Groups.Where(g => g.OwnerId == userId).OrderBy(g => g.Id).ToList();
+        }
+
+        public async Task<bool> DeleteGroup(int groupId)
+        {
+            var group = await GetGroup(groupId);
+            _context.Remove(group);
+            return Save();
         }
     }
 }

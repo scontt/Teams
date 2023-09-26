@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Teams.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     public class GroupController : ControllerBase
     {
@@ -64,7 +64,7 @@ namespace Teams.Controllers
             return Ok("Группа успешно создана");
         }
 
-        [HttpPut("{groupId}")]
+        [HttpPut("update")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -79,7 +79,7 @@ namespace Teams.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var group = _groupRepository.GetGroup(groupId);
+            var group = _mapper.Map<Group>(_groupRepository.GetGroup(groupId));
 
             var created = group.Created;
 
@@ -142,6 +142,18 @@ namespace Teams.Controllers
         {
             var groups = _mapper.Map<ICollection<GroupDTO>>(_groupRepository.GetUsersGroups(userId));
             return Results.Json(groups);
+        }
+
+        [HttpDelete("deletegroup")]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> DeleteGroup(int groupId) 
+        {
+            if (!await _groupRepository.DeleteGroup(groupId)) 
+            {
+                ModelState.AddModelError("", "Ой, что-то пошло не так :/");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
         }
     }
 }

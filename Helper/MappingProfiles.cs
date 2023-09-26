@@ -19,6 +19,7 @@ namespace Teams.Helper
             CreateMap<TargetDTO, Target>();
             CreateMap<ExecutorDTO, Executor>();
             CreateMap<MemberDTO, Member>();
+            CreateMap<Task<Group>, Group>();
         }
     }
 }
