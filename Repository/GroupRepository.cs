@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Teams.Data;
@@ -6,6 +7,7 @@ using Teams.Interfaces;
 
 namespace Teams.Repository
 {
+    [Authorize]
     public class GroupRepository : IGroupRepository
     {
         private readonly DataContext _context;

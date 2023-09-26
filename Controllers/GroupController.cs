@@ -68,7 +68,7 @@ namespace Teams.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateGroup([FromQuery] int groupId, [FromBody] GroupDTO updatedGroup)
+        public async Task<IActionResult> UpdateGroup(int groupId, [FromBody] GroupDTO updatedGroup)
         {
             if (updatedGroup == null)
                 return BadRequest(ModelState);
