@@ -8,6 +8,7 @@ using Teams.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.AspNetCore.Cors;
 
 namespace Teams.Controllers
 {
@@ -63,6 +64,7 @@ namespace Teams.Controllers
             return Ok(users);
         }
 
+        [EnableCors("MyPolicy")]
         [AllowAnonymous]
         [HttpPost("auth/signup")]
         [ProducesResponseType(204)]
