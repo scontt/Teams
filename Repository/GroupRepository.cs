@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Teams.Data;
-using Teams.DTO;
 using Teams.Interfaces;
 
 namespace Teams.Repository
@@ -17,7 +15,7 @@ namespace Teams.Repository
             _context = context;
         }
 
-        public ICollection<Group> GetAllGroups()
+        public async Task<ICollection<Group>> GetAllGroups()
         {
             return _context.Groups.OrderBy(g => g.Id).ToList();
         }
@@ -37,39 +35,39 @@ namespace Teams.Repository
             return _context.Members.OrderBy(m => m.UserId).Where(m => m.GroupId == groupId).ToList();
         }
 
-        public bool CreateGroup(Group group)
+        public async Task<bool> CreateGroup(Group group)
         {
             _context.Add(group);
-            return Save();
+            return await Save();
         }
 
-        public bool IsGroupExists(int groupId)
+        public async Task<bool> IsGroupExists(int groupId)
         {
             return _context.Groups.Any(g => g.Id == groupId);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateGroup(Group group)
+        public async Task<bool> UpdateGroup(Group group)
         {
             _context.Update(group);
-            return Save();
+            return await Save();
         }
 
-        public bool AddNewMember(Member newMember)
+        public async Task<bool> AddNewMember(Member newMember)
         {
             _context.Add(newMember);
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteMember(Member memberDelete)
+        public async Task<bool> DeleteMember(Member memberDelete)
         {
             _context.Remove(memberDelete);
-            return Save();
+            return await Save();
         }
 
         public ICollection<Group> GetUsersGroups(int userId)
@@ -81,7 +79,7 @@ namespace Teams.Repository
         {
             var group = await GetGroup(groupId);
             _context.Remove(group);
-            return Save();
+            return await Save();
         }
     }
 }
