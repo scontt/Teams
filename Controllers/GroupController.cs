@@ -53,7 +53,7 @@ namespace Teams.Controllers
             var groupMap = _mapper.Map<Group>(groupCreate);
             int userId = groupMap.OwnerId;
 
-            if (!_groupRepository.CreateGroup(groupMap))
+            if (!await _groupRepository.CreateGroup(groupMap))
             {
                 ModelState.AddModelError("", "Ой, что-то пошло не так :/");
                 return StatusCode(500, ModelState);
@@ -73,7 +73,7 @@ namespace Teams.Controllers
             if (updatedGroup == null)
                 return BadRequest(ModelState);
 
-            if (!_groupRepository.IsGroupExists(groupId))
+            if (!await _groupRepository.IsGroupExists(groupId))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -88,7 +88,7 @@ namespace Teams.Controllers
             groupMap.Created = created;
             groupMap.Id = groupId;
 
-            if (!_groupRepository.UpdateGroup(groupMap))
+            if (!await _groupRepository.UpdateGroup(groupMap))
             {
                 ModelState.AddModelError("", "Ой, что-то пошло не так :/");
                 return StatusCode(500, ModelState);
@@ -106,7 +106,7 @@ namespace Teams.Controllers
                 GroupId = groupId
             };
 
-            if (!_groupRepository.AddNewMember(newMember))
+            if (!await _groupRepository.AddNewMember(newMember))
             {
                 ModelState.AddModelError("", "Ой, что-то пошло не так :/");
                 return StatusCode(500, ModelState);
@@ -125,7 +125,7 @@ namespace Teams.Controllers
 
             var memberMap = _mapper.Map<Member>(memberToDelete);
 
-            if (!_groupRepository.DeleteMember(memberMap))
+            if (!await _groupRepository.DeleteMember(memberMap))
             {
                 ModelState.AddModelError("", "Ой, что-то пошло не так :/");
                 return StatusCode(500, ModelState);
@@ -133,7 +133,7 @@ namespace Teams.Controllers
 
             return NoContent(); 
         }
-
+        
         [AllowAnonymous]
         [HttpGet("usergroups")]
         [ProducesResponseType(200)]
@@ -148,7 +148,7 @@ namespace Teams.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> DeleteGroup(int groupId) 
         {
-            if (!await _groupRepository.DeleteGroup(groupId)) 
+            if (!await _groupRepository.DeleteGroup(groupId))
             {
                 ModelState.AddModelError("", "Ой, что-то пошло не так :/");
                 return StatusCode(500, ModelState);

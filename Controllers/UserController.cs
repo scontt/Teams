@@ -1,5 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +5,8 @@ using Teams.DTO;
 using Teams.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.AspNetCore.Cors;
+using Teams.Services;
 
 namespace Teams.Controllers
 {
@@ -64,7 +62,6 @@ namespace Teams.Controllers
             return Ok(users);
         }
 
-        [EnableCors("MyPolicy")]
         [AllowAnonymous]
         [HttpPost("auth/signup")]
         [ProducesResponseType(204)]
@@ -121,15 +118,7 @@ namespace Teams.Controllers
                 return Results.Unauthorized();
 
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, _user.Username) };
-            var jwt = new JwtSecurityToken(
-                issuer: AuthOptions.ISSUER,
-                audience: AuthOptions.AUDIENCE,
-                claims: claims,
-                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(30)),
-                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
-            );
-            
-            var ecnodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var ecnodedJwt = AuthService.GetJwtToken(claims);
 
             var userJson = JsonConvert.SerializeObject(_user);
 

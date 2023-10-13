@@ -4,11 +4,7 @@ using Teams.Data;
 using Teams.Interfaces;
 using Teams.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,13 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
          };
 });
 builder.Services.AddAuthorization();
-builder.Services.AddCors(options => {
-    options.AddPolicy(name: "MyPolicy", builder => builder
-    .WithOrigins("http://192.168.81.20:8080/")
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-});
+builder.Services.AddCors();
 
 builder.Services.AddDbContext<DataContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
@@ -68,7 +58,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors(options => {
+    options
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin();
+});
 
 app.UseHttpsRedirection();
 
@@ -76,7 +71,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
- 
-app.Map("/data", [Authorize] () => new { message= "Hello World!" });
 
 app.Run();
